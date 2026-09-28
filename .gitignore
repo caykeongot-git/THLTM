@@ -1,0 +1,10 @@
+# Bỏ qua toàn bộ thư mục build, dist của tất cả các bài
+**/build/
+**/dist/
+
+# Bỏ qua cấu hình cá nhân của NetBeans
+**/nbproject/private/
+
+# Bỏ qua file rác của hệ điều hành
+.DS_Store
+Thumbs.db

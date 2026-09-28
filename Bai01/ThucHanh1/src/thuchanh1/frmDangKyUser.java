@@ -18,14 +18,6 @@ public class frmDangKyUser extends javax.swing.JFrame {
     public frmDangKyUser() {
         initComponents();
         
-        // ép hình nền dãn tràn viền phủ kín form
-        if (jLabel5.getIcon() != null) {
-            java.awt.Image img = ((javax.swing.ImageIcon) jLabel5.getIcon()).getImage();
-            java.awt.Image scaledImg = img.getScaledInstance(this.getWidth(), this.getHeight(), java.awt.Image.SCALE_SMOOTH);
-            jLabel5.setIcon(new javax.swing.ImageIcon(scaledImg));
-            jLabel5.setBounds(0, 0, this.getWidth(), this.getHeight());
-        }
-        
         // làm trong suốt 3 nut radio
         choread.setOpaque(false);
         chowrite.setOpaque(false);
@@ -51,8 +43,10 @@ public class frmDangKyUser extends javax.swing.JFrame {
         // (Khuyến mãi thêm) Bo nhẹ góc cho 2 nút bấm luôn cho đồng bộ:
         btnRegister.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(140, 100, 200), 2, true));
         btnExit.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(160, 160, 160), 2, true));
-        }
-
+        this.setSize(850, 650);
+        this.setLocationRelativeTo(null);
+    }
+        
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -75,7 +69,6 @@ public class frmDangKyUser extends javax.swing.JFrame {
         chofull = new javax.swing.JRadioButton();
         btnExit = new javax.swing.JButton();
         btnRegister = new javax.swing.JButton();
-        jLabel5 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
@@ -123,9 +116,6 @@ public class frmDangKyUser extends javax.swing.JFrame {
         btnRegister.setText("Register");
         btnRegister.addActionListener(this::btnRegisterActionPerformed);
         getContentPane().add(btnRegister, new org.netbeans.lib.awtextra.AbsoluteConstraints(255, 509, 365, -1));
-
-        jLabel5.setIcon(new javax.swing.ImageIcon("/home/ubuntu/Downloads/moshimoshi05/Bai01/ThucHanh1/images.jpeg")); // NOI18N
-        getContentPane().add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 870, 620));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -199,7 +189,6 @@ public class frmDangKyUser extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel5;
     private javax.swing.JPasswordField txtpassword;
     private javax.swing.JTextField txtpath;
     private javax.swing.JTextField txtusername;

@@ -10,7 +10,7 @@ public class MyConnection {
             Class.forName("com.mysql.cj.jdbc.Driver"); // driver cho mysql 8 tren java 21
             
             // dinh nghia toa do db moshiDB
-            String url = "jdbc:mysql://localhost:3006/moshiDB?useUnicode=true&characterEncoding=UTF-8";
+            String url = "jdbc:mysql://localhost:3306/moshiDB?useUnicode=true&characterEncoding=UTF-8";
             String user = "root";
             String pass = ""; //default
             
