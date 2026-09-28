@@ -1,0 +1,261 @@
+================================================================================
+                    TỔNG HỢP VÀ GIẢI THÍCH CHI TIẾT CODE BÀI 2
+                 (DÀNH CHO MOSHI ÔN TẬP VÀ TRẢ LỜI VẤN ĐÁP)
+================================================================================
+
+Thư mục: Bai02
+Bao gồm 2 phần:
+  - PHẦN 2.1: Thao tác Thư mục (frmDirectory.java)
+  - PHẦN 2.2: Thao tác Đọc / Ghi File (frmReadWriteFile.java)
+
+--------------------------------------------------------------------------------
+                     PHẦN 2.1: THAO TÁC THƯ MỤC & LỌC FILE
+--------------------------------------------------------------------------------
+
+[SỰ KIỆN 1: Nút "Chọn đường dẫn" - btnChonDuongDanActionPerformed]
+Mục đích: Mở hộp thoại chọn thư mục và lấy đường dẫn dán vào ô text.
+
+```java
+private void btnChonDuongDanActionPerformed(java.awt.event.ActionEvent evt) {                                                
+    // Bước 1: Mở hộp thoại JFileChooser (fcpath đã được cấu hình DIRECTORIES_ONLY ở giao diện)
+    // Lệnh showOpenDialog(this) sẽ chặn chương trình cho đến khi người dùng chọn xong hoặc bấm Cancel.
+    int returnVal = fcpath.showOpenDialog(this);
+    
+    // Bước 2: Kiểm tra xem người dùng có thực sự bấm nút "Open" (hoặc Approve) hay không
+    if (returnVal == javax.swing.JFileChooser.APPROVE_OPTION) {
+        
+        // Bước 3: Lấy đối tượng File đại diện cho thư mục mà người dùng vừa click chọn
+        java.io.File file = fcpath.getSelectedFile();
+        
+        // Bước 4: Trích xuất đường dẫn tuyệt đối đầy đủ của thư mục đó (dạng chuỗi String)
+        // và hiển thị trực tiếp lên ô nhập liệu txtpath trên giao diện.
+        txtpath.setText(file.getAbsolutePath());
+    }
+}
+```
+
+--------------------------------------------------------------------------------
+
+[SỰ KIỆN 2: Nút "Liệt kê danh sách file" - btnlietkeActionPerformed]
+Mục đích: Đọc thư mục từ ô txtpath, lọc theo ký tự txtkytu và đẩy vào JList.
+
+```java
+private void btnlietkeActionPerformed(java.awt.event.ActionEvent evt) {                                          
+    // Bước 1: Lấy chuỗi đường dẫn từ ô txtpath, dùng trim() để cắt bỏ khoảng trắng thừa đầu đuôi
+    // Sau đó khởi tạo một đối tượng File đại diện cho thư mục đó
+    java.io.File dir = new java.io.File(txtpath.getText().trim());
+    
+    // Bước 2: KIỂM TRA BẢO MẬT & TÍNH HỢP LỆ (Validation)
+    // - !dir.exists(): Đường dẫn không hề tồn tại trên ổ đĩa
+    // - !dir.isDirectory(): Đường dẫn trỏ tới 1 file chứ không phải thư mục
+    if (!dir.exists() || !dir.isDirectory()) {
+        // Bật popup thông báo lỗi cho người dùng biết
+        javax.swing.JOptionPane.showMessageDialog(this, 
+            "Sai đường dẫn hoặc thư mục không tồn tại!", 
+            "Lỗi", 
+            javax.swing.JOptionPane.ERROR_MESSAGE);
+        return; // Dừng hàm ngay lập tức, không chạy tiếp xuống dưới
+    }
+    
+    // Bước 3: Lấy từ khóa/ký tự muốn lọc từ ô txtkytu
+    String kytu = txtkytu.getText().trim();
+    
+    // Khai báo một mảng chứa danh sách các File con
+    java.io.File[] dsFile;
+    
+    // Bước 4: Xử lý logic lọc danh sách file
+    if (kytu.isEmpty()) {
+        // Trường hợp 1: Nếu người dùng để trống ô lọc -> lấy toàn bộ file/thư mục con
+        dsFile = dir.listFiles();
+    } else {
+        // Trường hợp 2: Nếu có nhập từ khóa lọc -> dùng FilenameFilter (Interface bộ lọc)
+        // Đây là kỹ thuật Anonymous Class (Lớp ẩn danh) trong Java OOP
+        dsFile = dir.listFiles(new java.io.FilenameFilter() {
+            @Override
+            public boolean accept(java.io.File d, String name) {
+                // name là tên của từng file trong thư mục
+                // name.contains(kytu) sẽ trả về true nếu tên file có chứa từ khóa lọc
+                // Chỉ những file nào trả về true mới được đưa vào mảng dsFile
+                return name.contains(kytu);
+            }
+        });
+    }
+    
+    // Bước 5: Đưa danh sách file lên giao diện JList
+    // JList trong Swing sử dụng mô hình MVC: Dữ liệu được quản lý bởi DefaultListModel
+    javax.swing.DefaultListModel<String> dm = new javax.swing.DefaultListModel<>();
+    
+    // Kiểm tra mảng dsFile khác null (phòng trường hợp thư mục bị cấm quyền truy cập - Permission Denied)
+    if (dsFile != null) {
+        // Duyệt từng file trong mảng
+        for (java.io.File f : dsFile) {
+            // f.getName() chỉ lấy tên file (vd: test.txt) thay vì lấy cả đường dẫn dài ngoằng
+            // addElement sẽ thêm từng tên file vào mô hình dữ liệu
+            dm.addElement(f.getName());
+        }
+    }
+    
+    // Cuối cùng, gắn Model chứa danh sách file này vào thành phần list_file trên giao diện
+    list_file.setModel(dm);
+}
+```
+
+
+--------------------------------------------------------------------------------
+                   PHẦN 2.2: THAO TÁC ĐỌC / GHI FILE (BYTE & CHAR)
+--------------------------------------------------------------------------------
+
+[SỰ KIỆN 3: Nút "Ghi File nhị phân" - btVietFileNhiPhanActionPerformed]
+Bản chất: Ghi dữ liệu dạng thô (Byte Stream) bằng FileOutputStream.
+
+```java
+private void btVietFileNhiPhanActionPerformed(java.awt.event.ActionEvent evt) {                                                  
+    // Bước 1: Tạo một mảng byte cố định kích thước 20 phần tử (tất cả byte ban đầu có giá trị 0x00)
+    byte a[] = new byte[20];
+    
+    // Bước 2: Lấy chuỗi ký tự người dùng nhập và phân tách thành mảng ký tự char[]
+    char s[] = txtNhapChuoi.getText().toCharArray();
+    
+    // Bước 3: Ép kiểu (cast) từng ký tự char thành byte và nhét vào mảng byte a[]
+    // Điều kiện i < a.length để phòng chống tràn mảng (Buffer Overflow) nếu chuỗi dài hơn 20 ký tự
+    for (int i = 0; i < s.length && i < a.length; i++) {
+        a[i] = (byte) s[i];
+    }
+    
+    // Bước 4: Mở luồng xuất nhị phân và ghi mảng byte xuống đĩa cứng
+    try {
+        // Tạo đối tượng File trỏ đến tên file cần ghi
+        java.io.File file = new java.io.File(txtFileName.getText());
+        
+        // Mở luồng FileOutputStream kết nối thẳng đến file vật lý
+        java.io.FileOutputStream fo = new java.io.FileOutputStream(file);
+        
+        // Ghi toàn bộ 20 byte của mảng a xuống file (bao gồm các byte chữ và các byte 0x00 còn dư)
+        fo.write(a);
+        
+        // Đóng luồng ngay sau khi ghi để giải phóng tài nguyên hệ điều hành (tránh Resource Leak)
+        fo.close();
+        
+        javax.swing.JOptionPane.showMessageDialog(this, "Ghi file nhị phân thành công!");
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+}
+```
+
+--------------------------------------------------------------------------------
+
+[SỰ KIỆN 4: Nút "Đọc File nhị phân" - btDocFileNhiPhanActionPerformed]
+Bản chất: Đọc chuỗi byte từ đĩa cứng lên RAM bằng FileInputStream.
+
+```java
+private void btDocFileNhiPhanActionPerformed(java.awt.event.ActionEvent evt) {                                                
+    try {
+        // Bước 1: Trỏ đến file cần đọc
+        java.io.File file = new java.io.File(txtFileName.getText());
+        
+        // Bước 2: Mở luồng FileInputStream để đọc dữ liệu nhị phân từ file
+        java.io.FileInputStream fi = new java.io.FileInputStream(file);
+        
+        // Bước 3: fi.available() cho biết tổng số lượng byte hiện có trong file
+        // Khởi tạo mảng byte có kích thước đúng bằng số byte trong file để hứng toàn bộ dữ liệu
+        byte a[] = new byte[fi.available()];
+        
+        // Bước 4: Đọc toàn bộ các byte từ file nạp đầy vào mảng byte a[]
+        fi.read(a);
+        
+        // Đóng luồng đọc file
+        fi.close();
+        
+        // Bước 5: Chuyển đổi mảng byte thành chuỗi String (new String(a))
+        // và hiển thị lên ô txtNoiDungFile.
+        // LƯU Ý KỸ THUẬT: Những byte 0x00 còn dư lúc ghi nhị phân sẽ hiển thị thành ký tự ô vuông □.
+        txtNoiDungFile.setText(new String(a));
+    } catch (Exception e) {
+        javax.swing.JOptionPane.showMessageDialog(this, "Lỗi đọc file: " + e.getMessage());
+    }
+}
+```
+
+--------------------------------------------------------------------------------
+
+[SỰ KIỆN 5: Nút "Ghi File văn bản" - btVietFileVanBanActionPerformed]
+Bản chất: Ghi chuỗi ký tự theo chuẩn mã hóa văn bản bằng FileWriter (Character Stream).
+
+```java
+private void btVietFileVanBanActionPerformed(java.awt.event.ActionEvent evt) {                                                
+    try {
+        // Bước 1: Khởi tạo FileWriter kết nối tới file
+        // Khác với FileOutputStream (làm việc với byte), FileWriter làm việc trực tiếp với Ký Tự (char/String)
+        java.io.FileWriter fw = new java.io.FileWriter(new java.io.File(txtFileName.getText()));
+        
+        // Bước 2: Ghi trực tiếp chuỗi văn bản lấy từ ô txtNhapChuoi vào file
+        // Ghi đúng số ký tự thực tế, KHÔNG hề có byte 0x00 nào bị thừa
+        fw.write(txtNhapChuoi.getText());
+        
+        // Bước 3: Đóng luồng (hành động đóng cũng tự động flush đẩy hết dữ liệu đệm xuống ổ cứng)
+        fw.close();
+        
+        javax.swing.JOptionPane.showMessageDialog(this, "Ghi file văn bản thành công!");
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+}
+```
+
+--------------------------------------------------------------------------------
+
+[SỰ KIỆN 6: Nút "Đọc File văn bản" - btDocFileVanBanActionPerformed]
+Bản chất: Đọc từng đoạn ký tự bằng FileReader theo cơ chế Buffer (Bộ đệm mảng char).
+
+```java
+private void btDocFileVanBanActionPerformed(java.awt.event.ActionEvent evt) {                                              
+    try {
+        // Bước 1: Mở luồng FileReader để đọc văn bản
+        java.io.FileReader fr = new java.io.FileReader(new java.io.File(txtFileName.getText()));
+        
+        // Bước 2: Khởi tạo StringBuilder để gom các mảnh ký tự đọc được vào thành một chuỗi hoàn chỉnh
+        // (Dùng StringBuilder tối ưu bộ nhớ hơn so với cộng chuỗi String thông thường)
+        StringBuilder sb = new StringBuilder();
+        
+        // Bước 3: Tạo mảng đệm char ca[] có kích thước 5 ký tự để mỗi lần đọc 1 block 5 ký tự
+        char ca[] = new char[5];
+        
+        int len; // Biến lưu số lượng ký tự thực tế đọc được trong mỗi lần đọc
+        
+        // Bước 4: Vòng lặp đọc dữ liệu:
+        // - fr.read(ca): Đọc tối đa 5 ký tự nhét vào mảng ca[], trả về số ký tự thực tế đọc được gán vào len
+        // - Khi đã đọc đến cuối file (End of File - EOF), hàm read() sẽ trả về giá trị -1
+        // - Vòng lặp dừng lại khi len == -1
+        while ((len = fr.read(ca)) != -1) {
+            // Nối đúng số lượng ký tự 'len' vừa đọc được vào StringBuilder
+            // sb.append(mảng_nguồn, vị_trí_bắt_đầu, số_lượng_cần_lấy)
+            sb.append(ca, 0, len);
+        }
+        
+        // Bước 5: Đóng luồng đọc file
+        fr.close();
+        
+        // Bước 6: Chuyển toàn bộ StringBuilder thành String và đưa lên ô txtNoiDungFile
+        // Kết quả chữ hiển thị sạch sẽ, chuẩn xác từng ký tự!
+        txtNoiDungFile.setText(sb.toString());
+    } catch (Exception e) {
+        javax.swing.JOptionPane.showMessageDialog(this, "Lỗi đọc file: " + e.getMessage());
+    }
+}
+```
+
+================================================================================
+                         GHI CHÚ DÀNH CHO VẤN ĐÁP THẦY CÔ
+================================================================================
+
+1. So sánh Byte Stream (FileOutputStream/FileInputStream) và Character Stream (FileWriter/FileReader):
+   - Byte Stream: Làm việc với dữ liệu nhị phân thô (8-bit bytes). Dùng tốt cho file ảnh, âm thanh, video, file nén (.zip), file cấu trúc dữ liệu.
+   - Character Stream: Làm việc với văn bản có bảng mã ký tự (Unicode, UTF-8, 16-bit char). Dùng để ghi/đọc text, code, tài liệu văn bản.
+
+2. Tại sao khi ghi nhị phân lại có các ô vuông □ ở đuôi?
+   - Do cấp phát mảng cố định `byte[20]`. Chuỗi chỉ dài 16 byte, 4 byte còn lại có giá trị mặc định là 0 (`\0` - Null byte). Khi chuyển thành chuỗi và hiển thị trên giao diện đồ họa, các font chữ hiển thị ký tự Null thành hình ô vuông.
+
+3. Tại sao khi dùng `FileReader` lại cần vòng lặp `while ((len = fr.read(ca)) != -1)`?
+   - Đây là kỹ thuật đọc theo Buffer (khối đệm). Thay vì đọc từng ký tự một (gây tốn I/O ổ đĩa), ta đọc từng khối 5 ký tự. Khi hết file thì `read()` trả về `-1`. Việc dùng `len` giúp tránh lấy thừa dữ liệu cũ còn sót lại trong mảng đệm ở lần đọc cuối cùng.
+================================================================================

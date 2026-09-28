@@ -8,9 +8,11 @@
 
 ## 📌 PHIÊN HIỆN TẠI (LATEST STATUS)
 
-- **Trạng thái bài tập:** Đã hoàn thành xong **Bài 1** (CSDL & Form Đăng ký Swing).
-- **Mục tiêu tiếp theo:** Bắt đầu **Bài 2: Luồng nhập xuất (Thao tác File & Directory)**.
-- **Trạng thái Git:** Đã push code Bài 1 lên GitHub (`origin/main`).
+- **Trạng thái bài tập:** 
+  - ✅ **Bài 1:** Hoàn thành xuất sắc (CSDL, JDBC, Form Đăng ký Swing).
+  - ✅ **Bài 2:** Hoàn thành xuất sắc (2.1: Duyệt & Lọc thư mục `frmDirectory`; 2.2: Đọc/Ghi file nhị phân & văn bản `frmReadWriteFile`).
+- **Mục tiêu tiếp theo:** Bắt đầu **Bài 3: Lập trình mạng InetAddress (IP, Domain, DNS)**.
+- **Trạng thái Git:** Sẵn sàng commit & push Bài 2 lên GitHub.
 - **Mật khẩu MySQL cần nhớ:**
   - Ở Nhà (Windows): `"root123"`
   - Ở Trường (Ubuntu XAMPP): `""` (Rỗng)
@@ -35,6 +37,21 @@
   - Khi bắt đầu Bài 2: Đọc yêu cầu từ **trang 26** file `THỰC HÀNH LẬP TRÌNH MẠNG MÁY TÍNH.pdf`.
   - Hướng dẫn Moshi tạo project mới hoặc package mới cho Bài 2 (ví dụ `Bai02` hoặc package `bai02`).
   - Duy trì đúng tôn chỉ: Moshi tự gõ code để hiểu sâu, Agent giải thích bản chất và review bảo mật.
+
+---
+
+### 🗓️ Session 2: 2026-09-28 (Tại Nhà - Windows) - HOÀN THÀNH BÀI 2
+- **Agent:** Antigravity (Home)
+- **Môi trường:** Windows 10/11, Adoptium JDK 17, NetBeans 22.
+- **Những việc đã hoàn thành:**
+  1. Tạo Project `ThucHanh2` trong thư mục `Bai02/ThucHanh2`.
+  2. **Hoàn thành Phần 2.1 (Thao tác Thư mục):** Form `frmDirectory` với `fcpath` (JFileChooser dạng `DIRECTORIES_ONLY`), lọc file theo ký tự `txtkytu` qua `FilenameFilter`, hiển thị ra `JList`. Test thành công rực rỡ với thư mục `#Cisco`.
+  3. **Hoàn thành Phần 2.2 (Thao tác File):** Form `frmReadWriteFile` với 4 chức năng: Ghi/Đọc nhị phân (`FileOutputStream`/`FileInputStream`) và Ghi/Đọc văn bản (`FileWriter`/`FileReader`).
+  4. Test thành công đọc/ghi file `test.txt` với chuỗi `MoshiRedTeam2026`. File được lưu tự động tại thư mục gốc của project.
+- **Lời nhắn bàn giao cho Agent phiên tiếp theo (hoặc ở trường):**
+  - **Bài 1 và Bài 2 đã xong 100%!**
+  - Chuẩn bị cho **Bài 3: Lập trình mạng INETADDRESS** (Bắt đầu từ **trang 33** trong file giáo trình PDF).
+  - Tiếp tục phát huy tinh thần: Moshi tự gõ code, Agent hỗ trợ logic, giải thích bản chất network/security và fix bug môi trường.
 
 ---
 
